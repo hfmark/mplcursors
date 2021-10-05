@@ -24,6 +24,7 @@ _default_bindings = dict(
     down="shift+down",
     toggle_enabled="e",
     toggle_visible="v",
+    remove_last='d',
 )
 _default_annotation_kwargs = dict(
     bbox=dict(
@@ -638,10 +639,11 @@ class Cursor:
         if not self._selections or not self.enabled:
             return
         sel = self._selection_stack[-1]
-        for key in ["left", "right", "up", "down"]:
+        for key in ["left", "right", "up", "down", "remove_last"]:
             if event.key == self.bindings[key]:
                 self.remove_selection(sel)
-                self.add_selection(_pick_info.move(*sel, key=key))
+                if key in ["left", "right", "up", "down"]:
+                    self.add_selection(_pick_info.move(*sel, key=key))
                 break
 
     def remove_selection(self, sel):
